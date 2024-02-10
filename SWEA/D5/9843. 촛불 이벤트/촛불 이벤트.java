@@ -6,9 +6,9 @@ import java.util.StringTokenizer;
 public class Solution {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
-	static Long N; // 양초의 총 갯수
-	static Long L; // 배열의 가장 첫번째
-	static Long R; // 배열의 가장 끝
+	static long N; // 양초의 총 갯수
+	static long L; // 배열의 가장 첫번째
+	static long R; // 배열의 가장 끝
 	
 	public static void main(String[] args) throws IOException {
 		st = new StringTokenizer(br.readLine());
@@ -26,14 +26,14 @@ public class Solution {
 
 	public static Long binarySearch() {// 이분탐색
 		while (L <= R) {
-			Long mid = (L + R) / 2;
-			Long value = mathResult(mid);
+			long mid = (L + R) / 2;
+			long value = mathResult(mid);
 			
 			if(value<N) {
 				L = mid+1L;
 			}else if(value>N) {
 				R = mid-1L;
-			}else if(value.equals(N)) {
+			}else if(value==N) {
 				return mid;
 			}
 //			System.out.println(value);
