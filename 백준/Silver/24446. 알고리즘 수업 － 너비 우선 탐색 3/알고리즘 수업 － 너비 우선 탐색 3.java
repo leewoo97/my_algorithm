@@ -2,66 +2,81 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int[] visited;
-
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringTokenizer st;
+	static List<List<Integer>> list;
+	static Queue<Integer> queue;
+	static int[] visited; //방문배열
+	static int N; //정점 수
+	static int M; //간선 수
+	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		Queue<int[]> queue = new LinkedList<>();
-
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
 		int R = Integer.parseInt(st.nextToken());
-		visited = new int[N + 1];
-
-		// 인접 리스트 만들기
-		// 2차원 리스트
-		ArrayList<ArrayList<Integer>> list = new ArrayList<>();
-
-		for (int i = 0; i <= N; i++) {
-			ArrayList<Integer> list2 = new ArrayList<>();
-			list.add(list2);
+		
+		listSet();
+		visitedSet();
+		queueSet();
+		BFS(R, 0);
+		printVisited();
+	}
+	
+	public static void listSet() throws IOException {
+		list = new ArrayList<List<Integer>>();
+		for(int i=0; i<=N; i++) {
+			list.add(new ArrayList<Integer>());
 		}
-
-		for (int i = 0; i < M; i++) {
+		for(int i=0; i<M; i++) {
 			st = new StringTokenizer(br.readLine());
-			int temp = Integer.parseInt(st.nextToken());
-			int temp2 = Integer.parseInt(st.nextToken());
-
-			list.get(temp).add(temp2);
-			list.get(temp2).add(temp);
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			list.get(u).add(v);
+			list.get(v).add(u);
 		}
-
-		for (int i = 0; i <= N; i++) {
-			Collections.sort(list.get(i));
+	}
+	
+	public static void visitedSet() {
+		visited = new int[N+1];
+		
+		for(int i=0; i<=N; i++) {
+			visited[i] = -1;
 		}
-
-		// 인접 리스트 완성 , 이 위는 건들지 말것.
-		queue.add(new int[] {R, 1});
-		visited[R] = 1;
-
-		while (!queue.isEmpty()) {
-			int[] v = queue.poll();
-			for (int i : list.get(v[0])) {
-				if (visited[i] == 0) {
-					queue.add(new int[] {i, v[1]+1});
-					visited[i] = v[1]+1;
+	}
+	
+	public static void queueSet() {
+		queue = new LinkedList<Integer>();
+	}
+	
+	public static void BFS(int v, int depth) {
+		visited[v] = depth;
+		queue.add(v);
+		queue.add(depth);
+		while(!queue.isEmpty()) {
+			v = queue.poll();
+			depth = queue.poll();
+			for(int i=0; i<list.get(v).size(); i++) {
+				int nextV = list.get(v).get(i);
+				if(visited[nextV]==-1) {
+					int nextDepth = depth+1;
+					visited[nextV] = nextDepth;
+					queue.add(nextV);
+					queue.add(nextDepth);
 				}
 			}
 		}
-		StringBuilder sb = new StringBuilder();
-		for(int i=1;i<visited.length;i++) {
-			sb.append(visited[i]-1);
-			sb.append("\n");
+	}
+	
+	public static void printVisited() {
+		for(int i=1; i<=N; i++) {
+			System.out.println(visited[i]);
 		}
-		System.out.println(sb);
-		// BFS하려면 Q를 이용
 	}
 }
